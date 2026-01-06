@@ -17,18 +17,21 @@ sudo createhomedir -c -u runneradmin > /dev/null
 sudo dscl . -append /Groups/admin GroupMembership runneradmin
 
 # Enable Screen Sharing
+sudo defaults write /var/db/launchd.db/com.apple.launchd/overrides.plist com.apple.screensharing -dict Disabled -bool false
+sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
+
 sudo defaults write /Library/Preferences/com.apple.RemoteManagement ScreenSharingAllowed -bool YES
 sudo defaults write /Library/Preferences/com.apple.RemoteManagement ARD_AllLocalUsers -bool TRUE
 
 # Enable VNC
-sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -allowAccessFor -allUsers -privs -all
-sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -configure -clientopts -setvnclegacy -vnclegacy yes 
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -allowAccessFor -allUsers -privs -all -clientopts -setvnclegacy -vnclegacy yes
 
 echo runnerrdp | perl -we 'BEGIN { @k = unpack "C*", pack "H*", "1734516E8BA8C5E2FF1C39567390ADCA"}; $_ = <>; chomp; s/^(.{8}).*/$1/; @p = unpack "C*", $_; foreach (@k) { printf "%02X", $_ ^ (shift @p || 0) }; print "\n"' | sudo tee /Library/Preferences/com.apple.VNCSettings.txt
 
+sudo /usr/local/bin/screenresolution set 1920x1080x32 || echo "Resolution utility not found, skipping..."
+
 # Start VNC/reset changes
-sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console
-sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate
+sudo /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -restart -agent -console -activate
 
 # Install ngrok
 brew install --cask ngrok
