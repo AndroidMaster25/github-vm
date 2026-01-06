@@ -13,7 +13,7 @@ sudo dscl . -create /Users/runneradmin PrimaryGroupID 80
 sudo dscl . -create /Users/runneradmin NFSHomeDirectory /Users/tcv
 sudo dscl . -passwd /Users/runneradmin P@ssw0rd!
 sudo dscl . -passwd /Users/runneradmin P@ssw0rd!
-sudo createhomedir -c -u runneradmin > /dev/nullhttps://github.com/AndroidMaster25/github-vm/blob/main/mac/start.sh
+sudo createhomedir -c -u runneradmin > /dev/null
 sudo dscl . -append /Groups/admin GroupMembership runneradmin
 
 #Enable VNC
